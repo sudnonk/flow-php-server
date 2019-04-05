@@ -16,10 +16,10 @@ class Autoloader
      *
      * @param string|null $dir
      */
-    public function __construct($dir = null)
+    public function __construct(string $dir = null)
     {
         if (is_null($dir)) {
-            $dir = __DIR__.'/..';
+            $dir = __DIR__ . '/..';
         }
 
         $this->dir = $dir;
@@ -30,7 +30,7 @@ class Autoloader
      *
      * @return string
      */
-    public function getDir()
+    public function getDir(): string
     {
         return $this->dir;
     }
@@ -41,7 +41,7 @@ class Autoloader
      * @codeCoverageIgnore
      * @param string|null $dir
      */
-    public static function register($dir = null)
+    public static function register(string $dir = null)
     {
         ini_set('unserialize_callback_func', 'spl_autoload_call');
         spl_autoload_register(array(new self($dir), 'autoload'));
@@ -52,16 +52,21 @@ class Autoloader
      *
      * @param string $class A class name
      *
-     * @return boolean Returns true if the class has been loaded
+     * @return boolean Returns true if the class has been loaded, and false for else.
      */
-    public function autoload($class)
+    public function autoload(string $class): bool
     {
+        //If the class name doesn't contain 'Flow'
         if (0 !== strpos($class, 'Flow')) {
-            return;
+            return false;
         }
 
-        if (file_exists($file = $this->dir.'/'.str_replace('\\', '/', $class).'.php')) {
+        if (file_exists($file = $this->dir . '/' . str_replace('\\', '/', $class) . '.php')) {
             require $file;
+
+            return true;
         }
+
+        return false;
     }
 }

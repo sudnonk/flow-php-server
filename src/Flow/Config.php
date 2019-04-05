@@ -16,7 +16,7 @@ class Config implements ConfigInterface
      *
      * @param array $config
      */
-    public function __construct($config = array())
+    public function __construct(array $config = [])
     {
         $this->config = $config;
     }
@@ -24,9 +24,9 @@ class Config implements ConfigInterface
     /**
      * Set path to temporary directory for chunks storage
      *
-     * @param $path
+     * @param string $path
      */
-    public function setTempDir($path)
+    public function setTempDir(string $path)
     {
         $this->config['tempDir'] = $path;
     }
@@ -36,7 +36,7 @@ class Config implements ConfigInterface
      *
      * @return string
      */
-    public function getTempDir()
+    public function getTempDir(): string
     {
         return isset($this->config['tempDir']) ? $this->config['tempDir'] : '';
     }
@@ -46,7 +46,7 @@ class Config implements ConfigInterface
      *
      * @param callable $callback
      */
-    public function setHashNameCallback($callback)
+    public function setHashNameCallback(callable $callback)
     {
         $this->config['hashNameCallback'] = $callback;
     }
@@ -56,7 +56,7 @@ class Config implements ConfigInterface
      *
      * @return callable
      */
-    public function getHashNameCallback()
+    public function getHashNameCallback(): callable
     {
         return isset($this->config['hashNameCallback']) ? $this->config['hashNameCallback'] : '\Flow\Config::hashNameCallback';
     }
@@ -66,7 +66,7 @@ class Config implements ConfigInterface
      *
      * @param callable $callback
      */
-    public function setPreprocessCallback($callback)
+    public function setPreprocessCallback(callable $callback)
     {
         $this->config['preprocessCallback'] = $callback;
     }
@@ -86,7 +86,7 @@ class Config implements ConfigInterface
      *
      * @param bool $delete
      */
-    public function setDeleteChunksOnSave($delete)
+    public function setDeleteChunksOnSave(bool $delete)
     {
         $this->config['deleteChunksOnSave'] = $delete;
     }
@@ -96,7 +96,7 @@ class Config implements ConfigInterface
      *
      * @return bool
      */
-    public function getDeleteChunksOnSave()
+    public function getDeleteChunksOnSave(): bool
     {
         return isset($this->config['deleteChunksOnSave']) ? $this->config['deleteChunksOnSave'] : true;
     }
@@ -108,7 +108,7 @@ class Config implements ConfigInterface
      *
      * @return string
      */
-    public static function hashNameCallback(RequestInterface $request)
+    public static function hashNameCallback(RequestInterface $request): string
     {
         return sha1($request->getIdentifier());
     }

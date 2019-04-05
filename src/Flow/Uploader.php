@@ -17,15 +17,15 @@ class Uploader
         $handle = opendir($chunksFolder);
 
         if (!$handle) {
-            throw new FileOpenException('failed to open folder: '.$chunksFolder);
+            throw new FileOpenException('failed to open folder: ' . $chunksFolder);
         }
 
         while (false !== ($entry = readdir($handle))) {
-            if ($entry == "." || $entry == ".." || $entry == ".gitignore") {
+            if ($entry === "." || $entry === ".." || $entry === ".gitignore") {
                 continue;
             }
 
-            $path = $chunksFolder.DIRECTORY_SEPARATOR.$entry;
+            $path = $chunksFolder . DIRECTORY_SEPARATOR . $entry;
 
             if (is_dir($path)) {
                 continue;

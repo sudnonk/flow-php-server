@@ -4,5 +4,5 @@ flow.js php server [![Build Status](https://travis-ci.org/flowjs/flow-php-server
 Forked from -> https://github.com/flowjs/flow-php-server
 
 ## diff
-- using PHP 7
+- PHP >7 compatible
 - using [PSR-7](https://github.com/php-fig/http-message) for receiving request.

@@ -15,6 +15,9 @@ class AutoloadTest extends FlowUnitCase
 	/**
 	 * @covers ::__construct
 	 * @covers ::getDir
+     *
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
 	public function testAutoloader_construct_default()
 	{
@@ -27,6 +30,9 @@ class AutoloadTest extends FlowUnitCase
 	/**
 	 * @covers ::__construct
 	 * @covers ::getDir
+     *
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
 	public function testAutoloader_construct_custom()
 	{
@@ -38,6 +44,9 @@ class AutoloadTest extends FlowUnitCase
 
 	/**
 	 * @covers ::autoload
+     *
+     * @throws \PHPUnit\Framework\ExpectationFailedException
+     * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
     public function testClassesExist()
     {

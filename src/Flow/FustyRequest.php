@@ -2,6 +2,8 @@
 
 namespace Flow;
 
+use Psr\Http\Message\UploadedFileInterface;
+
 /**
  * Class FustyRequest
  *
@@ -13,14 +15,19 @@ class FustyRequest extends Request
 {
     private $isFusty = false;
 
-    public function __construct($params = null, $file = null)
+    /**
+     * FustyRequest constructor.
+     * @param array|null                 $params
+     * @param UploadedFileInterface|null $file
+     */
+    public function __construct(array $params = null, UploadedFileInterface $file = null)
     {
         parent::__construct($params, $file);
 
         $this->isFusty = $this->getTotalSize() === null && $this->getFileName() && $this->getFile();
 
         if ($this->isFusty) {
-            $this->params['flowTotalSize'] = isset($this->file['size']) ? $this->file['size'] : 0;
+            $this->params['flowTotalSize'] = !is_null($this->file->getSize()) ? $this->file->getSize() : 0;
             $this->params['flowTotalChunks'] = 1;
             $this->params['flowChunkNumber'] = 1;
             $this->params['flowChunkSize'] = $this->params['flowTotalSize'];
@@ -32,7 +39,7 @@ class FustyRequest extends Request
      * Checks if request is formed by fusty flow
      * @return bool
      */
-    public function isFustyFlowRequest()
+    public function isFustyFlowRequest(): bool
     {
         return $this->isFusty;
     }

@@ -44,7 +44,7 @@ class File
      *
      * @return string
      */
-    public function getIdentifier()
+    public function getIdentifier(): string
     {
         return $this->identifier;
     }
@@ -56,9 +56,9 @@ class File
      *
      * @return string
      */
-    public function getChunkPath($index)
+    public function getChunkPath($index): string
     {
-        return $this->config->getTempDir().DIRECTORY_SEPARATOR.basename($this->identifier).'_'. (int) $index;
+        return $this->config->getTempDir() . DIRECTORY_SEPARATOR . basename($this->identifier) . '_' . (int)$index;
     }
 
     /**
@@ -66,7 +66,7 @@ class File
      *
      * @return bool
      */
-    public function checkChunk()
+    public function checkChunk(): bool
     {
         return file_exists($this->getChunkPath($this->request->getCurrentChunkNumber()));
     }
@@ -76,23 +76,23 @@ class File
      *
      * @return bool
      */
-    public function validateChunk()
+    public function validateChunk(): bool
     {
         $file = $this->request->getFile();
-
         if (!$file) {
             return false;
         }
 
-        if (!isset($file['tmp_name']) || !isset($file['size']) || !isset($file['error'])) {
+        $size = $file->getSize();
+        if (!$size) {
+            return false;
+        }
+        if ($this->request->getCurrentChunkSize() !== $size) {
             return false;
         }
 
-        if ($this->request->getCurrentChunkSize() != $file['size']) {
-            return false;
-        }
-
-        if ($file['error'] !== UPLOAD_ERR_OK) {
+        $error = $file->getError();
+        if ($error !== UPLOAD_ERR_OK) {
             return false;
         }
 
@@ -102,13 +102,14 @@ class File
     /**
      * Save chunk
      *
-     * @return bool
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      */
     public function saveChunk()
     {
         $file = $this->request->getFile();
 
-        return $this->_move_uploaded_file($file['tmp_name'], $this->getChunkPath($this->request->getCurrentChunkNumber()));
+        $file->moveTo($this->getChunkPath($this->request->getCurrentChunkNumber()));
     }
 
     /**
@@ -129,7 +130,7 @@ class File
             $totalChunksSize += filesize($file);
         }
 
-        return $this->request->getTotalSize() == $totalChunksSize;
+        return $this->request->getTotalSize() === $totalChunksSize;
     }
 
     /**
@@ -140,15 +141,14 @@ class File
      *
      * @throws FileLockException
      * @throws FileOpenException
-     * @throws \Exception
      *
      * @return bool indicates if file was saved
      */
-    public function save($destination)
+    public function save(string $destination)
     {
         $fh = fopen($destination, 'wb');
         if (!$fh) {
-            throw new FileOpenException('failed to open destination file: '.$destination);
+            throw new FileOpenException('failed to open destination file: ' . $destination);
         }
 
         if (!flock($fh, LOCK_EX | LOCK_NB, $blocked)) {
@@ -161,7 +161,7 @@ class File
             }
             // @codeCoverageIgnoreEnd
 
-            throw new FileLockException('failed to lock file: '.$destination);
+            throw new FileLockException('failed to lock file: ' . $destination);
         }
 
         $totalChunks = $this->request->getTotalChunks();
@@ -174,7 +174,7 @@ class File
                 $chunk = fopen($file, "rb");
 
                 if (!$chunk) {
-                    throw new FileOpenException('failed to open chunk: '.$file);
+                    throw new FileOpenException('failed to open chunk: ' . $file);
                 }
 
                 if ($preProcessChunk !== null) {
@@ -184,7 +184,7 @@ class File
                 stream_copy_to_stream($chunk, $fh);
                 fclose($chunk);
             }
-        } catch (\Exception $e) {
+        } catch (FileOpenException $e) {
             flock($fh, LOCK_UN);
             fclose($fh);
             throw $e;

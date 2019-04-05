@@ -1,11 +1,15 @@
 {
-  "name": "flowjs/flow-php-server",
-  "description": "PHP library for handling chunk uploads. Works with flow.js html5 file uploads.",
+  "name": "sudnonk/flow-php-server",
+  "description": "PHP-7.2 library for handling chunk uploads. Works with flow.js html5 file uploads. Fork of flowjs/flow-php-server.",
   "license": "MIT",
   "authors": [
     {
       "name": "Aidas Klimas",
       "email": "aidaskk@gmail.com"
+    },
+    {
+      "name": "sudnonk",
+      "email": "sudnonk12@yahoo.co.jp"
     }
   ],
   "keywords": [
@@ -19,17 +23,18 @@
     "chunks"
   ],
   "require": {
-      "php": ">=5.3"
+    "php": "^7.2",
+    "zendframework/zend-diactoros": "^2.1"
   },
   "require-dev": {
-    "mikey179/vfsStream": "v1.2.0",
-    "league/phpunit-coverage-listener": "~1.1",
-    "fabpot/php-cs-fixer": "2.2",
-    "phpunit/phpunit": "4.*"
+    "mikey179/vfsStream": "^1.6",
+    "league/phpunit-coverage-listener": "^1.1",
+    "fabpot/php-cs-fixer": "^2.14",
+    "phpunit/phpunit": "^8.0"
   },
   "autoload": {
-    "psr-0": {
-      "Flow": "src"
+    "psr-4": {
+      "Flow\\": "src/"
     }
   }
 }

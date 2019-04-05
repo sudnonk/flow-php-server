@@ -2,7 +2,7 @@
 
 namespace Flow;
 
-use Psr\Http\Message\UploadedFileInterface;
+use Zend\Diactoros\ServerRequest;
 
 /**
  * Class FustyRequest
@@ -17,12 +17,11 @@ class FustyRequest extends Request
 
     /**
      * FustyRequest constructor.
-     * @param array|null                 $params
-     * @param UploadedFileInterface|null $file
+     * @param ServerRequest|null $serverRequest
      */
-    public function __construct(array $params = null, UploadedFileInterface $file = null)
+    public function __construct(ServerRequest $serverRequest = null)
     {
-        parent::__construct($params, $file);
+        parent::__construct($serverRequest);
 
         $this->isFusty = $this->getTotalSize() === null && $this->getFileName() && $this->getFile();
 

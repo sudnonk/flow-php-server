@@ -3,7 +3,9 @@
 namespace Flow;
 
 use Psr\Http\Message\UploadedFileInterface;
+use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\ServerRequestFactory;
+use Zend\Diactoros\UploadedFile;
 
 class Request implements RequestInterface
 {
@@ -17,28 +19,29 @@ class Request implements RequestInterface
     /**
      * File
      *
-     * @var UploadedFileInterface
+     * @var UploadedFileInterface|null
      */
     protected $file;
 
     /**
      * Constructor
      *
-     * @param array|null                 $params
-     * @param UploadedFileInterface|null $file
+     * @param ServerRequest|null $serverRequest
      */
-    public function __construct(array $params = null, UploadedFileInterface $file = null)
+    public function __construct(ServerRequest $serverRequest = null)
     {
-        $request = ServerRequestFactory::fromGlobals();
-
-        if ($params === null) {
-            //$_REQUEST contains QueryParams and CookieParams.
-            $params = array_merge($request->getQueryParams(), $request->getCookieParams());
+        if ($serverRequest === null) {
+            $serverRequest = ServerRequestFactory::fromGlobals();
         }
 
-        $uploaded_files = $request->getUploadedFiles();
-        if ($file === null && isset($uploaded_files['file'])) {
+        //$_REQUEST contains QueryParams and CookieParams.
+        $params = array_merge($serverRequest->getQueryParams(), $serverRequest->getCookieParams());
+
+        $uploaded_files = $serverRequest->getUploadedFiles();
+        if (isset($uploaded_files['file']) && $uploaded_files['file'] instanceof UploadedFile) {
             $file = $uploaded_files['file'];
+        } else {
+            $file = null;
         }
 
         $this->params = $params;
